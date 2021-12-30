@@ -8,9 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class LexicalAnalyzer {
-
     private Matcher matcher;
-
 
     public LexicalAnalyzer(java.util.Scanner sc) {
         StringBuilder input = new StringBuilder();
@@ -25,24 +23,20 @@ public class LexicalAnalyzer {
     }
 
     public Token getNextToken() {
-
         while (matcher.find()) {
             for (Type t : Type.values()) {
-
                 if (matcher.group(t.name()) != null) {
                     if (matcher.group(Type.COMMENT.name()) != null) {
                         break;
-
                     }
-                    if(matcher.group(Type.ErrorID.name())!=null){
+                    if (matcher.group(Type.ErrorID.name()) != null) {
                         ErrorHandler.printError("The id must start with character");
                         break;
                     }
-
                     return new Token(t, matcher.group(t.name()));
                 }
             }
         }
-        return new Token(Type.EOF,"$");
+        return new Token(Type.EOF, "$");
     }
 }

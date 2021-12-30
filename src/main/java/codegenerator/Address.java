@@ -19,15 +19,16 @@ public class Address {
         this.Type = TypeAddress.DIRECT;
         this.varType = varType;
     }
-    public String toString(){
-        switch (Type){
+
+    public String toString() {
+        switch (Type) {
             case DIRECT:
-                return num+"";
+                return num + "";
             case INDIRECT:
-                return "@"+num;
+                return "@" + num;
             case IMMEDIATE:
-                return "#"+num;
+                return "#" + num;
         }
-        return num+"";
+        return num + "";
     }
 }
