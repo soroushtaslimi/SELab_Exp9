@@ -1,16 +1,16 @@
 package parser;
 
+import codegenerator.CodeGenerator;
+import errorhandler.ErrorHandler;
+import log.Log;
+import scanner.LexicalAnalyzer;
+import scanner.token.Token;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Stack;
-
-import log.Log;
-import codegenerator.CodeGenerator;
-import errorhandler.ErrorHandler;
-import scanner.LexicalAnalyzer;
-import scanner.token.Token;
 
 public class Parser {
     private ArrayList<Rule> rules;
@@ -53,7 +53,6 @@ public class Parser {
                     case SHIFT:
                         parsStack.push(currentAction.number);
                         lookAhead = lexicalAnalyzer.getNextToken();
-
                         break;
                     case REDUCE:
                         Rule rule = rules.get(currentAction.number);
@@ -63,7 +62,7 @@ public class Parser {
 
                         Log.print(parsStack.peek() + "\t" + rule.LHS);
                         parsStack.push(parseTable.getGotoTable(parsStack.peek(), rule.LHS));
-                        Log.print(/*"new State : " + */parsStack.peek() + "");
+                        Log.print(parsStack.peek() + "");
                         try {
                             cg.semanticFunction(rule.semanticAction, lookAhead);
                         } catch (Exception e) {
@@ -75,7 +74,6 @@ public class Parser {
                         break;
                 }
                 Log.print("");
-
             } catch (Exception ignored) {
                 ignored.printStackTrace();
             }
