@@ -158,15 +158,7 @@ public class CodeGenerator {
             String className = symbolStack.pop();
             try {
                 Symbol s = symbolTable.get(className, methodName, next.value);
-                VarType t = VarType.INT;
-                switch (s.type) {
-                    case BOOL:
-                        t = VarType.BOOL;
-                        break;
-                    case INT:
-                        t = VarType.INT;
-                        break;
-                }
+                VarType t = findType(s);
                 ss.push(new Address(s.address, t));
             } catch (Exception e) {
                 ss.push(new Address(0, VarType.NON));
@@ -184,15 +176,7 @@ public class CodeGenerator {
         ss.pop();
 
         Symbol s = symbolTable.get(symbolStack.pop(), symbolStack.pop());
-        VarType t = VarType.INT;
-        switch (s.type) {
-            case BOOL:
-                t = VarType.BOOL;
-                break;
-            case INT:
-                t = VarType.INT;
-                break;
-        }
+        VarType t = findType(s);
         ss.push(new Address(s.address, t));
     }
 
@@ -251,15 +235,7 @@ public class CodeGenerator {
         String methodName = callStack.pop();
         try {
             Symbol s = symbolTable.getNextParam(callStack.peek(), methodName);
-            VarType t = VarType.INT;
-            switch (s.type) {
-                case BOOL:
-                    t = VarType.BOOL;
-                    break;
-                case INT:
-                    t = VarType.INT;
-                    break;
-            }
+            VarType t = findType(s);
             Address param = ss.pop();
             if (param.varType != t) {
                 ErrorHandler.printError("The argument type isn't match");
@@ -269,6 +245,19 @@ public class CodeGenerator {
             ErrorHandler.printError("Too many arguments pass for method");
         }
         callStack.push(methodName);
+    }
+
+    private VarType findType(Symbol s) {
+        VarType t = VarType.INT;
+        switch (s.type) {
+            case BOOL:
+                t = VarType.BOOL;
+                break;
+            case INT:
+                t = VarType.INT;
+                break;
+        }
+        return t;
     }
 
     public void assign() {
