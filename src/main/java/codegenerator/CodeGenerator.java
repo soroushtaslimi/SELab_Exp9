@@ -136,7 +136,8 @@ public class CodeGenerator {
     }
 
     private void defMain() {
-        memory.add3AddressCode(ss.pop().num, Operation.JP, new Address(memory.getCurrentCodeBlockAddress(), VarType.ADDRESS), null, null);
+        Address address = new Address(memory.getCurrentCodeBlockAddress(), VarType.ADDRESS);
+        memory.add3AddressCode(ss.pop().num, Operation.JP, address, null, null);
         String methodName = "main";
         String className = symbolStack.pop();
 
@@ -234,9 +235,18 @@ public class CodeGenerator {
         }
         Address temp = new Address(memory.getTemp(), t);
         ss.push(temp);
-        memory.add3AddressCode(Operation.ASSIGN, new Address(temp.num, VarType.ADDRESS, TypeAddress.IMMEDIATE), new Address(symbolTable.getMethodReturnAddress(className, methodName), VarType.ADDRESS), null);
-        memory.add3AddressCode(Operation.ASSIGN, new Address(memory.getCurrentCodeBlockAddress() + 2, VarType.ADDRESS, TypeAddress.IMMEDIATE), new Address(symbolTable.getMethodCallerAddress(className, methodName), VarType.ADDRESS), null);
-        memory.add3AddressCode(Operation.JP, new Address(symbolTable.getMethodAddress(className, methodName), VarType.ADDRESS), null, null);
+
+        Address address1 = new Address(temp.num, VarType.ADDRESS, TypeAddress.IMMEDIATE);
+        Address address2 = new Address(symbolTable.getMethodReturnAddress(className, methodName), VarType.ADDRESS);
+        memory.add3AddressCode(Operation.ASSIGN, address1, address2, null);
+
+        Address address3 = new Address(memory.getCurrentCodeBlockAddress() + 2,
+                VarType.ADDRESS, TypeAddress.IMMEDIATE);
+        Address address4 = new Address(symbolTable.getMethodCallerAddress(className, methodName), VarType.ADDRESS);
+        memory.add3AddressCode(Operation.ASSIGN, address3, address4, null);
+
+        Address address5 = new Address(symbolTable.getMethodAddress(className, methodName), VarType.ADDRESS);
+        memory.add3AddressCode(Operation.JP, address5, null, null);
     }
 
     public void arg() {
@@ -304,18 +314,21 @@ public class CodeGenerator {
     }
 
     public void _while() {
-        memory.add3AddressCode(ss.pop().num, Operation.JPF, ss.pop(), new Address(memory.getCurrentCodeBlockAddress() + 1, VarType.ADDRESS), null);
+        Address address = new Address(memory.getCurrentCodeBlockAddress() + 1, VarType.ADDRESS);
+        memory.add3AddressCode(ss.pop().num, Operation.JPF, ss.pop(), address, null);
         memory.add3AddressCode(Operation.JP, ss.pop(), null, null);
     }
 
     public void jpf_save() {
         Address save = new Address(memory.saveMemory(), VarType.ADDRESS);
-        memory.add3AddressCode(ss.pop().num, Operation.JPF, ss.pop(), new Address(memory.getCurrentCodeBlockAddress(), VarType.ADDRESS), null);
+        memory.add3AddressCode(ss.pop().num, Operation.JPF, ss.pop(),
+                new Address(memory.getCurrentCodeBlockAddress(), VarType.ADDRESS), null);
         ss.push(save);
     }
 
     public void jpHere() {
-        memory.add3AddressCode(ss.pop().num, Operation.JP, new Address(memory.getCurrentCodeBlockAddress(), VarType.ADDRESS), null, null);
+        memory.add3AddressCode(ss.pop().num, Operation.JP,
+                new Address(memory.getCurrentCodeBlockAddress(), VarType.ADDRESS), null, null);
     }
 
     public void print() {
@@ -423,8 +436,12 @@ public class CodeGenerator {
         if (s.varType != temp) {
             ErrorHandler.printError("The type of method and return address was not match");
         }
-        memory.add3AddressCode(Operation.ASSIGN, s, new Address(symbolTable.getMethodReturnAddress(symbolStack.peek(), methodName), VarType.ADDRESS, TypeAddress.INDIRECT), null);
-        memory.add3AddressCode(Operation.JP, new Address(symbolTable.getMethodCallerAddress(symbolStack.peek(), methodName), VarType.ADDRESS), null, null);
+        Address address2 = new Address(symbolTable.getMethodReturnAddress(symbolStack.peek(), methodName),
+                VarType.ADDRESS, TypeAddress.INDIRECT);
+        memory.add3AddressCode(Operation.ASSIGN, s, address2, null);
+        Address address3 = new Address(symbolTable.getMethodCallerAddress(symbolStack.peek(), methodName),
+                VarType.ADDRESS);
+        memory.add3AddressCode(Operation.JP, address3, null, null);
     }
 
     public void defParam() {
