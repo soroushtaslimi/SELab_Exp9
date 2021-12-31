@@ -2,7 +2,6 @@ package parser;
 
 import codegenerator.CodeGenerator;
 import errorhandler.ErrorHandler;
-import log.Log;
 import scanner.LexicalAnalyzer;
 import scanner.token.Token;
 
@@ -46,9 +45,7 @@ public class Parser {
         Action currentAction;
         while (!finish) {
             try {
-                Log.print(lookAhead.toString() + "\t" + parsStack.peek());
                 currentAction = parseTable.getActionTable(parsStack.peek(), lookAhead);
-                Log.print(currentAction.toString());
 
                 switch (currentAction.action) {
                     case SHIFT:
@@ -61,20 +58,17 @@ public class Parser {
                             parsStack.pop();
                         }
 
-                        Log.print(parsStack.peek() + "\t" + rule.LHS);
                         parsStack.push(parseTable.getGotoTable(parsStack.peek(), rule.LHS));
-                        Log.print(parsStack.peek() + "");
                         try {
                             cg.semanticFunction(rule.semanticAction, lookAhead);
                         } catch (Exception e) {
-                            Log.print("Code Genetator Error");
+                            e.printStackTrace();
                         }
                         break;
                     case ACCEPT:
                         finish = true;
                         break;
                 }
-                Log.print("");
             } catch (Exception ignored) {
                 ignored.printStackTrace();
             }
