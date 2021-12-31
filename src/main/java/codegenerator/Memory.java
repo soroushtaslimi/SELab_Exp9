@@ -10,15 +10,15 @@ public class Memory {
     private List<ThreeAddressCode> codeBlock;
     private int lastTempIndex;
     private int lastDataAddress;
-    private final int stratTempMemoryAddress = 500;
-    private final int stratDataMemoryAddress = 200;
-    private final int dataSize = 4;
-    private final int tempSize = 4;
+    private static final int startTempMemoryAddress = 500;
+    private static final int startDataMemoryAddress = 200;
+    private static final int dataSize = 4;
+    private static final int tempSize = 4;
 
     public Memory() {
         codeBlock = new ArrayList<ThreeAddressCode>();
-        lastTempIndex = stratTempMemoryAddress;
-        lastDataAddress = stratDataMemoryAddress;
+        lastTempIndex = startTempMemoryAddress;
+        lastDataAddress = startDataMemoryAddress;
     }
 
     public int getTemp() {
