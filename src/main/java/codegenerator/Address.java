@@ -22,12 +22,11 @@ public class Address {
 
     public String toString() {
         switch (Type) {
-            case DIRECT:
-                return num + "";
             case INDIRECT:
                 return "@" + num;
             case IMMEDIATE:
                 return "#" + num;
+            case DIRECT:
             default:
                 return num + "";
         }
