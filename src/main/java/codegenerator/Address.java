@@ -28,7 +28,8 @@ public class Address {
                 return "@" + num;
             case IMMEDIATE:
                 return "#" + num;
+            default:
+                return num + "";
         }
-        return num + "";
     }
 }
